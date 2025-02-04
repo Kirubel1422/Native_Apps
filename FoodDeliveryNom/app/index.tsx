@@ -4,18 +4,38 @@ import { useEffect } from "react";
 import { ImageBackground } from "expo-image";
 import { burger_intro } from "@/assets/images";
 import { StatusBar } from "expo-status-bar";
+import { Link } from "expo-router";
+import { useFonts } from "expo-font";
 
 SplashScreen.preventAutoHideAsync();
 export default function Index() {
-  useEffect(() => {
-    const loadApp = async () => {
-      // Simulate loading (fetching data, auth check, etc.)
-      await new Promise((resolve) => setTimeout(resolve, 6000));
-      await SplashScreen.hideAsync(); // Hide splash screen when ready
-    };
+  const [fontsLoaded, error] = useFonts({
+    "Poppins-Black": require("../assets/fonts/Poppins-Black.ttf"),
+    "Poppins-Bold": require("../assets/fonts/Poppins-Bold.ttf"),
+    "Poppins-ExtraBold": require("../assets/fonts/Poppins-ExtraBold.ttf"),
+    "Poppins-ExtraLight": require("../assets/fonts/Poppins-ExtraLight.ttf"),
+    "Poppins-Light": require("../assets/fonts/Poppins-Light.ttf"),
+    "Poppins-Medium": require("../assets/fonts/Poppins-Medium.ttf"),
+    "Poppins-Regular": require("../assets/fonts/Poppins-Regular.ttf"),
+    "Poppins-SemiBold": require("../assets/fonts/Poppins-SemiBold.ttf"),
+    "Poppins-Thin": require("../assets/fonts/Poppins-Thin.ttf"),
+  });
 
-    loadApp();
-  }, []);
+  useEffect(() => {
+    if (error) throw error;
+
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, error]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
+  if (!fontsLoaded && !error) {
+    return null;
+  }
 
   return (
     <ImageBackground source={burger_intro} style={styles.container}>
@@ -24,9 +44,11 @@ export default function Index() {
         <Text style={styles.paragraph}>
           Savor the convenience of restaurant-quality meals, delivered promptly.
         </Text>
-        <Pressable style={styles.button}>
-          <Text style={styles.button_text}>Next</Text>
-        </Pressable>
+        <Link href="/(auth)/sign-up" asChild>
+          <Pressable style={styles.button}>
+            <Text style={styles.button_text}>Next</Text>
+          </Pressable>
+        </Link>
       </View>
 
       <StatusBar hidden={true} />
